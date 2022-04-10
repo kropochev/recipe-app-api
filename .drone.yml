@@ -5,6 +5,13 @@ name: default
 steps:
 - name: default
   image: python:3.6
+  volumes:
+  - name: docker_sock
+    path: /var/run/docker.sock
   commands:
   - pip install docker-compose
   - docker-compose run app sh -c "python manage.py test && flake8"
+volumes:
+- name: docker_sock
+  host:
+    path: /var/run/docker.sock
