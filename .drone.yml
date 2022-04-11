@@ -2,8 +2,23 @@ kind: pipeline
 name: default
 
 steps:
+- name: docker  
+  image: plugins/docker
+  settings:
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password
+    repo: kropochev/recipe-app-api
+    auto_tag: true
+
 - name: test
   image: docker/compose
+  settings:
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password
   volumes:
   - name: docker_sock
     path: /var/run/docker.sock
