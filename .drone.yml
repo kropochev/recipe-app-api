@@ -1,18 +1,9 @@
 kind: pipeline
+type: docker
 name: default
 
 steps:
-- name: docker  
-  image: plugins/docker
-  settings:
-    username:
-      from_secret: docker_username
-    password:
-      from_secret: docker_password
-    repo: kropochev/recipe-app-api
-    auto_tag: true
-
-- name: test
+- name: default
   image: docker/compose
   settings:
     username:
@@ -23,8 +14,10 @@ steps:
   - name: docker_sock
     path: /var/run/docker.sock
   commands:
-  - docker-compose run app sh -c "python manage.py test && flake8"
+  - docker-compose -f docker-compose.drone.yml build --no-cache
+  - docker-compose -f docker-compose.drone.yml run app sh -c "python manage.py test && flake8"
+
 volumes:
-- name: docker_sock
-  host:
-    path: /var/run/docker.sock
+  - name: docker_sock
+    host:
+      path: /var/run/docker.sock
